@@ -80,6 +80,33 @@ class CompaniesPage(BasePage):
     close_popup_btn = "button:has-text('Close')"
 
     edit_company_btn = "button:has-text('Edit Company')"
+
+    # ----------------- Edit Company -----------------
+
+    edit_company_menu_option = "text=Edit Company"
+    update_company_btn = "button:has-text('Update Company')"
+    update_success_toast = "text=Company updated successfully."
+    admin_details_locked_banner = "text=The admin's name and Email ID cannot be changed after registration."
+    duplicate_company_name_error = "text=A company with this name already exists."
+
+    # ----------------- Suspend / Unsuspend Company -----------------
+
+    suspend_menu_option = "text=Suspend Company"
+    activate_menu_option = "text=Activate Company"   # confirm exact label once suspended
+
+    suspend_reason_textbox = "textarea[placeholder='Enter reason for suspension...']"
+    confirm_suspend_btn = "button:has-text('Suspend')"
+    confirm_activate_btn = "button:has-text('Activate')"   # confirm exact label/button text
+
+    suspend_success_toast = "text=Company suspended."
+    activate_success_toast = "text=Company unsuspended."     # confirm exact toast text
+
+    status_badge = "span:has-text('{status}')"   # generic, filled per row below
+    unsuspend_menu_option = "text='Unsuspend Company'"   # exact match (quotes = exact in Playwright text engine)
+    confirm_unsuspend_btn = "button:has-text('Unsuspend')"
+
+    unsuspend_success_toast = "text=Company unsuspended."
+
     
 #-------------------------Methods---------------------------------#
 
@@ -251,8 +278,7 @@ class CompaniesPage(BasePage):
         )
     
 
-    def open_company_details(
-        self,company_name):
+    def open_company_details(self,company_name):
 
         row = self.page.locator(f"tr:has-text('{company_name}')")
 
@@ -285,4 +311,79 @@ class CompaniesPage(BasePage):
     def close_actions_menu(self):
 
         self.page.mouse.click(100,100)
+
+    def open_edit_company(self, company_name):
+        self.open_company_details(company_name)   # opens the view popup
+        self.click(self.edit_company_btn)          # already defined -> navigates to edit page
+
+    def update_designation_and_department(self, designation, department):
+        self.page.locator(self.designation).fill(designation)
+        self.page.locator(self.department).fill(department)
+
+    def click_update_company(self):
+        self.click(self.update_company_btn)
+
+    def is_update_successful(self):
+        return self.is_visible_with_wait(self.update_success_toast)
         
+    # ----------------- Edit Company: field state checks -----------------
+
+    def is_domain_field_disabled(self):
+        return self.page.locator(self.domain).is_disabled()
+
+    def is_company_name_field_disabled(self):
+        return self.page.locator(self.company_name).is_disabled()
+
+    def is_admin_details_locked_banner_displayed(self):
+        return self.is_visible_with_wait(self.admin_details_locked_banner)
+    
+    def update_company_name(self, new_name):
+        self.page.locator(self.company_name).fill(new_name)
+
+    def get_company_name_value(self):
+        return self.page.locator(self.company_name).input_value()
+    
+    #-------------suspend compny-----------------------------
+
+    def click_suspend_company(self, company_name):
+        self.open_company_actions_menu(company_name)
+        self.click(self.suspend_menu_option)
+
+    def enter_suspend_reason(self, reason):
+        self.fill(self.suspend_reason_textbox, reason)
+
+    def confirm_suspend(self):
+        self.click(self.confirm_suspend_btn)
+
+    def is_suspend_successful(self):
+        return self.is_visible_with_wait(self.suspend_success_toast)
+
+    def click_activate_company(self, company_name):
+        self.open_company_actions_menu(company_name)
+        self.click(self.activate_menu_option)
+
+    def confirm_activate(self):
+        self.click(self.confirm_activate_btn)
+
+    def is_activate_successful(self):
+        return self.is_visible_with_wait(self.activate_success_toast)
+
+    def get_company_status(self, company_name):
+        row = self.page.locator(f"tr:has-text('{company_name}')")
+        # adjust selector below to match the actual status badge markup in that row
+        return row.locator("td span").filter(has_text="Active").or_(
+            row.locator("td span").filter(has_text="Suspended")
+        ).text_content().strip()
+    
+    def is_unsuspend_successful(self):
+        return self.is_visible_with_wait(self.activate_success_toast)
+    
+    def click_unsuspend_company(self, company_name):
+        self.open_company_actions_menu(company_name)
+        self.click(self.unsuspend_menu_option)
+
+    def confirm_unsuspend(self):
+        self.click(self.confirm_unsuspend_btn)
+
+    def is_unsuspend_successful(self):
+        return self.is_visible_with_wait(self.unsuspend_success_toast)  

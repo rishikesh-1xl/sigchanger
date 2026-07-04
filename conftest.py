@@ -16,9 +16,7 @@ load_dotenv()
 @pytest.fixture(scope="function")
 def page(playwright: Playwright):
 
-    browser = playwright.chromium.launch(
-        headless=Config.HEADLESS
-    )
+    browser = playwright.chromium.launch(headless=Config.HEADLESS)
 
     context = browser.new_context(
         viewport={
@@ -39,17 +37,13 @@ def page(playwright: Playwright):
 
     page = context.new_page()
 
-    page.set_default_timeout(
-        Config.TIMEOUT
-    )
+    page.set_default_timeout(Config.TIMEOUT)
     # print("Viewport Size:", page.viewport_size)
     yield page
 
     os.makedirs("traces", exist_ok=True)
 
-    context.tracing.stop(
-        path="traces/trace.zip"
-    )
+    context.tracing.stop(path="traces/trace.zip")
 
     context.close()
     browser.close()
@@ -67,15 +61,9 @@ def pytest_runtest_makereport(item, call):
 
         if page:
 
-            os.makedirs(
-                "screenshots",
-                exist_ok=True
-            )
+            os.makedirs("screenshots",exist_ok=True)
 
-            page.screenshot(
-                path=f"screenshots/{item.name}.png",
-                full_page=True
-            )
+            page.screenshot(path=f"screenshots/{item.name}.png",full_page=True)
 
 
 @pytest.fixture(scope="function")
@@ -83,9 +71,7 @@ def login(page):
 
     login_page = LoginPage(page)
 
-    login_page.navigate_to_login(
-        Config.BASE_URL
-    )
+    login_page.navigate_to_login(Config.BASE_URL)
 
     login_page.login(
         os.getenv("SIGCHANGER_USERNAME"),
