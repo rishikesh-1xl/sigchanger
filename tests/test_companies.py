@@ -303,3 +303,286 @@ def test_view_company_details_popup(
     companies_page.search_company(data["company_name"])
 
     assert not companies_page.is_company_visible(data["company_name"])
+
+@pytest.mark.tc_comp_014
+@pytest.mark.add_company
+def test_edit_company_updates_successfully(companies_page):
+
+    data = TestDataGenerator.generate_company_data()
+
+    # --- Create company ---
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        data["company_name"],
+        data["domain"],
+        data["first_name"],
+        data["last_name"],
+        data["email"],
+        data["designation"],
+        data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert companies_page.is_company_created_popup_displayed()
+
+    companies_page.click_done()
+
+    companies_page.search_company(data["company_name"])
+
+    assert companies_page.is_company_visible(data["company_name"])
+
+    # --- Edit company ---
+    companies_page.open_edit_company(data["company_name"])
+
+    updated_designation = "QAEdx"
+    updated_department = "Deptsnb"
+
+    companies_page.update_designation_and_department(
+        updated_designation,
+        updated_department
+    )
+
+    companies_page.click_update_company()
+
+    # --- Validate success toast ---
+    assert companies_page.is_update_successful(), \
+        "Company updated successfully toast not displayed"
+
+    # --- Cleanup ---
+    companies_page.search_company(data["company_name"])
+
+    assert companies_page.is_company_visible(data["company_name"])
+
+    companies_page.delete_company(data["company_name"])
+
+    companies_page.search_company(data["company_name"])
+
+    assert not companies_page.is_company_visible(data["company_name"])
+
+@pytest.mark.tc_comp_015
+def test_edit_company_immutable_fields_are_disabled(companies_page):
+
+    data = TestDataGenerator.generate_company_data()
+
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        data["company_name"],
+        data["domain"],
+        data["first_name"],
+        data["last_name"],
+        data["email"],
+        data["designation"],
+        data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert companies_page.is_company_created_popup_displayed()
+
+    companies_page.click_done()
+
+    companies_page.search_company(data["company_name"])
+
+    assert companies_page.is_company_visible(data["company_name"])
+
+    companies_page.open_edit_company(data["company_name"])
+
+    # Domain is the only disabled input field on this page
+    assert companies_page.is_domain_field_disabled(), \
+        "Domain field should be disabled on edit"
+
+    # Company Name is editable (not disabled)
+    assert not companies_page.is_company_name_field_disabled(), \
+        "Company Name field should be editable on edit"
+
+    # First Name / Last Name / Admin Email aren't rendered as fields —
+    # instead a banner explains they can't be changed
+    assert companies_page.is_admin_details_locked_banner_displayed(), \
+        "Admin details locked banner not displayed"
+
+    # Cleanup
+    companies_page.page.go_back()
+    companies_page.search_company(data["company_name"])
+    companies_page.delete_company(data["company_name"])
+    companies_page.search_company(data["company_name"])
+    assert not companies_page.is_company_visible(data["company_name"])
+
+@pytest.mark.tc_comp_016
+@pytest.mark.add_company
+def test_edit_company_name_updates_successfully(companies_page):
+
+    data = TestDataGenerator.generate_company_data()
+
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        data["company_name"],
+        data["domain"],
+        data["first_name"],
+        data["last_name"],
+        data["email"],
+        data["designation"],
+        data["department"]
+    )
+
+    companies_page.click_create_company()
+    assert companies_page.is_company_created_popup_displayed()
+    companies_page.click_done()
+
+    companies_page.search_company(data["company_name"])
+    assert companies_page.is_company_visible(data["company_name"])
+
+    companies_page.open_edit_company(data["company_name"])
+
+    updated_name = data["company_name"] + "Updated"
+
+    companies_page.update_company_name(updated_name)
+    companies_page.click_update_company()
+
+    assert companies_page.is_update_successful(), \
+        "Company updated successfully toast not displayed"
+
+    # Verify new name actually reflects in the list
+    companies_page.search_company(updated_name)
+    assert companies_page.is_company_visible(updated_name), \
+        "Updated company name not visible in list after update"
+
+    # Cleanup — delete using the NEW name since that's now the current name
+    companies_page.delete_company(updated_name)
+    companies_page.search_company(updated_name)
+    assert not companies_page.is_company_visible(updated_name)
+
+@pytest.mark.tc_comp_017
+@pytest.mark.add_company
+def test_edit_company_name_duplicate_rejected(companies_page):
+
+    data_a = TestDataGenerator.generate_company_data()
+    data_b = TestDataGenerator.generate_company_data()
+
+    # --- Create Company A ---
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        data_a["company_name"],
+        data_a["domain"],
+        data_a["first_name"],
+        data_a["last_name"],
+        data_a["email"],
+        data_a["designation"],
+        data_a["department"]
+    )
+
+    companies_page.click_create_company()
+    assert companies_page.is_company_created_popup_displayed()
+    companies_page.click_done()
+
+    companies_page.search_company(data_a["company_name"])
+    assert companies_page.is_company_visible(data_a["company_name"])
+
+    # --- Create Company B ---
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        data_b["company_name"],
+        data_b["domain"],
+        data_b["first_name"],
+        data_b["last_name"],
+        data_b["email"],
+        data_b["designation"],
+        data_b["department"]
+    )
+
+    companies_page.click_create_company()
+    assert companies_page.is_company_created_popup_displayed()
+    companies_page.click_done()
+
+    companies_page.search_company(data_b["company_name"])
+    assert companies_page.is_company_visible(data_b["company_name"])
+
+    # --- Attempt to rename Company B to Company A's name ---
+    companies_page.open_edit_company(data_b["company_name"])
+
+    companies_page.update_company_name(data_a["company_name"])
+    companies_page.click_update_company()
+
+    # Expect a duplicate-name error, not a success toast
+    assert not companies_page.is_update_successful(), \
+        "Update should not succeed when renaming to a duplicate company name"
+
+    # Adjust this locator/text once you confirm the actual error message shown
+    assert companies_page.is_visible_with_wait(companies_page.duplicate_company_name_error), \
+        "Duplicate name error not displayed"
+
+    # --- Cleanup: delete both companies ---
+    companies_page.page.go_back()
+
+    companies_page.search_company(data_a["company_name"])
+    companies_page.delete_company(data_a["company_name"])
+    companies_page.search_company(data_a["company_name"])
+    assert not companies_page.is_company_visible(data_a["company_name"])
+
+    companies_page.search_company(data_b["company_name"])
+    companies_page.delete_company(data_b["company_name"])
+    companies_page.search_company(data_b["company_name"])
+    assert not companies_page.is_company_visible(data_b["company_name"])
+
+
+@pytest.mark.tc_comp_018
+def test_suspend_and_unsuspend_company(companies_page):
+
+    data = TestDataGenerator.generate_company_data()
+
+    # --- Create company ---
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        data["company_name"],
+        data["domain"],
+        data["first_name"],
+        data["last_name"],
+        data["email"],
+        data["designation"],
+        data["department"]
+    )
+
+    companies_page.click_create_company()
+    assert companies_page.is_company_created_popup_displayed()
+    companies_page.click_done()
+
+    companies_page.search_company(data["company_name"])
+    assert companies_page.is_company_visible(data["company_name"])
+
+    # --- Suspend company ---
+    companies_page.click_suspend_company(data["company_name"])
+    companies_page.enter_suspend_reason("Automated test suspension")
+    companies_page.confirm_suspend()
+
+    assert companies_page.is_suspend_successful(), \
+        "Company suspended success toast not displayed"
+
+    companies_page.search_company(data["company_name"])
+
+    assert companies_page.get_company_status(data["company_name"]) == "Suspended", \
+        "Company status did not change to Suspended"
+
+    # --- Unsuspend company ---
+    companies_page.search_company(data["company_name"])
+
+    companies_page.click_unsuspend_company(data["company_name"])
+    companies_page.confirm_unsuspend()
+
+    assert companies_page.is_unsuspend_successful(), \
+        "Company unsuspended success toast not displayed"
+
+    companies_page.search_company(data["company_name"])
+
+    assert companies_page.get_company_status(data["company_name"]) == "Active", \
+        "Company status did not revert to Active"
+
+    # --- Cleanup ---
+    companies_page.delete_company(data["company_name"])
+    companies_page.search_company(data["company_name"])
+    assert not companies_page.is_company_visible(data["company_name"])
