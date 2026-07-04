@@ -7,6 +7,4 @@ class DashboardPage(BasePage):
 
     def is_dashboard_loaded(self):
 
-        return self.is_visible(
-            self.dashboard_header
-        )
+        return self.is_visible(self.dashboard_header)

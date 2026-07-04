@@ -13,10 +13,7 @@ class LoginPage(BasePage):
 
         self.page.goto(base_url)
 
-        self.page.get_by_role(
-            "link",
-            name="Company Sign In"
-        ).first.click()
+        self.page.get_by_role("link",name="Company Sign In").first.click()
 
     def login(self, username, password):
 
