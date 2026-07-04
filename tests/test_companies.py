@@ -16,9 +16,7 @@ def test_companies_page_controls(companies_page):
 
 @pytest.mark.tc_comp_003
 def test_all_plans_dropdown(companies_page):
-    actual = companies_page.get_dropdown_options(
-        companies_page.all_plans_dropdown
-    )
+    actual = companies_page.get_dropdown_options(companies_page.all_plans_dropdown)
 
     expected = [
         "All Plans", "Fresh", "Demo plan", "Basic", "Diamond",
@@ -79,14 +77,11 @@ def test_export_csv(companies_page):
 
     companies_page.click_export_csv()
 
-    assert companies_page.is_export_successful(), \
-        "Export success toast message not displayed"
+    assert companies_page.is_export_successful(),"Export success toast message not displayed"
 
 @pytest.mark.tc_comp_008
 @pytest.mark.add_company
-def test_add_company_cancel(
-        companies_page
-):
+def test_add_company_cancel(companies_page):
 
     data = TestDataGenerator.generate_company_data()
 
@@ -112,13 +107,9 @@ def test_add_company_cancel(
 
     companies_page.click_cancel()
 
-    companies_page.search_company(
-        data["company_name"]
-    )
+    companies_page.search_company(data["company_name"])
 
-    assert not companies_page.is_company_visible(
-        data["company_name"]
-    )
+    assert not companies_page.is_company_visible(data["company_name"])
 
 
 @pytest.mark.tc_comp_009
@@ -169,72 +160,41 @@ def test_create_and_delete_company(
 
     companies_page.click_done()
 
-    companies_page.search_company(
-        data["company_name"]
-    )
+    companies_page.search_company(data["company_name"])
 
-    assert companies_page.is_company_visible(
-        data["company_name"]
-    )
+    assert companies_page.is_company_visible(data["company_name"])
 
-    companies_page.delete_company(
-        data["company_name"]
-    )
+    companies_page.delete_company(data["company_name"])
 
-    companies_page.search_company(
-        data["company_name"]
-    )
+    companies_page.search_company(data["company_name"])
 
-    assert not companies_page.is_company_visible(
-        data["company_name"]
-    )
+    assert not companies_page.is_company_visible(data["company_name"])
 
 @pytest.mark.tc_comp_011
 @pytest.mark.add_company
-def test_add_company_invalid_business_rules(
-        companies_page
-):
+def test_add_company_invalid_business_rules(companies_page):
 
     data = TestDataGenerator.generate_company_data()
 
     companies_page.click_add_company()
 
-    companies_page.enter_text(
-        companies_page.company_name,
-        "Auto_123"
-    )
+    companies_page.enter_text(companies_page.company_name,"Auto_123")
 
-    companies_page.enter_text(
-        companies_page.workspace_domain,
-        "Auto_123.com"
-    )
+    companies_page.enter_text(companies_page.workspace_domain,"Auto_123.com")
 
-    companies_page.enter_text(
-        companies_page.first_name,
-        data["first_name"]
-    )
+    companies_page.enter_text(companies_page.first_name,data["first_name"])
 
-    companies_page.enter_text(
-        companies_page.last_name,
-        data["last_name"]
-    )
+    companies_page.enter_text(companies_page.last_name,data["last_name"])
 
-    companies_page.enter_text(
-        companies_page.admin_email,
-        "john@gmail.com"
-    )
+    companies_page.enter_text(companies_page.admin_email,"john@gmail.com")
 
     companies_page.click_create_company()
 
-    assert companies_page.is_visible(
-        "text=Company Name must contain only letters and numbers."
-    )
+    assert companies_page.is_visible_with_wait("text=Company Name must contain only letters and numbers.")
 
 @pytest.mark.tc_comp_012
 @pytest.mark.add_company
-def test_company_actions_menu_options(
-        companies_page
-):
+def test_company_actions_menu_options(companies_page):
 
     data = TestDataGenerator.generate_company_data()
 
@@ -264,31 +224,20 @@ def test_company_actions_menu_options(
 
     companies_page.click_done()
 
-    companies_page.search_company(
-        data["company_name"]
-    )
+    companies_page.search_company(data["company_name"])
 
-    companies_page.open_company_actions_menu(
-        data["company_name"]
-    )
+    companies_page.open_company_actions_menu(data["company_name"])
 
     assert companies_page.are_company_actions_visible()
 
     # Close menu after validation
     companies_page.close_actions_menu()
 
+    companies_page.delete_company(data["company_name"])
 
-    companies_page.delete_company(
-        data["company_name"]
-    )
+    companies_page.search_company(data["company_name"])
 
-    companies_page.search_company(
-        data["company_name"]
-    )
-
-    assert not companies_page.is_company_visible(
-        data["company_name"]
-    )
+    assert not companies_page.is_company_visible(data["company_name"])
 
 @pytest.mark.tc_comp_013
 @pytest.mark.add_company
@@ -324,41 +273,22 @@ def test_view_company_details_popup(
 
     companies_page.click_done()
 
-    companies_page.search_company(
-        data["company_name"]
-    )
+    companies_page.search_company(data["company_name"])
 
-    assert companies_page.is_company_visible(
-        data["company_name"]
-    )
+    assert companies_page.is_company_visible(data["company_name"] )
 
-    # companies_page.open_company_details(
-    #     data["company_name"]
-    # )
 
-    # assert companies_page.is_company_details_popup_displayed()
-
-    companies_page.open_company_details(
-    data["company_name"]
-)
+    companies_page.open_company_details(data["company_name"])
 
     companies_page.page.wait_for_timeout(3000)
 
-    companies_page.page.screenshot(
-        path="view_details_popup.png"
-    )
+    companies_page.page.screenshot(path="view_details_popup.png")
 
-    print(
-        "Current URL:",
-        companies_page.page.url
-    )
+    print( "Current URL:",companies_page.page.url)
 
     assert companies_page.is_company_details_popup_displayed()
 
-    assert (
-        companies_page.get_popup_company_name()
-        == data["company_name"]
-    )
+    assert (companies_page.get_popup_company_name()== data["company_name"])
 
     assert companies_page.is_close_button_visible()
 
@@ -366,18 +296,10 @@ def test_view_company_details_popup(
 
     companies_page.close_company_details_popup()
 
-    companies_page.search_company(
-        data["company_name"]
-    )
+    companies_page.search_company(data["company_name"])
 
-    companies_page.delete_company(
-        data["company_name"]
-    )
+    companies_page.delete_company(data["company_name"])
 
-    companies_page.search_company(
-        data["company_name"]
-    )
+    companies_page.search_company(data["company_name"])
 
-    assert not companies_page.is_company_visible(
-        data["company_name"]
-    )
+    assert not companies_page.is_company_visible(data["company_name"])
