@@ -107,6 +107,19 @@ class CompaniesPage(BasePage):
 
     unsuspend_success_toast = "text=Company unsuspended."
 
+    #---------------search box----------------------------#
+    no_companies_found_message = "text=No companies found."
+
+    #-------------change plan----------------------------#
+    change_plan_menu = "text=Change Plan"
+
+    plan_dropdown = "select"
+
+    update_plan_btn = "button:has-text('Update Plan')"
+
+    change_plan_popup = "text=Change Plan"
+
+
     
 #-------------------------Methods---------------------------------#
 
@@ -387,3 +400,37 @@ class CompaniesPage(BasePage):
 
     def is_unsuspend_successful(self):
         return self.is_visible_with_wait(self.unsuspend_success_toast)  
+    
+    def is_no_companies_found_message_displayed(self):
+
+        return self.is_visible_with_wait(
+            self.no_companies_found_message
+        )
+    
+    def select_company_plan(self, plan_name):
+
+        self.page.locator(self.plan_dropdown).select_option(label=plan_name)
+
+    def click_update_plan(self):
+
+        self.click(self.update_plan_btn)
+
+    def get_company_plan(self, company_name):
+
+        row = self.page.locator(f"tbody tr:has-text('{company_name}')")
+
+        return row.locator("td").nth(2).text_content().strip()
+    
+    def wait_for_plan_update(self):
+
+        self.page.wait_for_timeout(2000)
+    
+    def click_change_plan(self, company_name):
+
+        self.open_company_actions_menu(company_name)
+
+        self.click(self.change_plan_menu)
+
+    def select_company_plan(self, plan_name):
+
+        self.page.get_by_role("combobox").last.select_option(label=plan_name)
