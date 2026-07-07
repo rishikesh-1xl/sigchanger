@@ -1,5 +1,6 @@
 import pytest
 import time
+from pages import companies_page
 from utilities.test_data_generator import TestDataGenerator
 
 
@@ -411,7 +412,6 @@ def test_edit_company_immutable_fields_are_disabled(companies_page):
     assert not companies_page.is_company_visible(data["company_name"])
 
 @pytest.mark.tc_comp_016
-@pytest.mark.add_company
 def test_edit_company_name_updates_successfully(companies_page):
 
     data = TestDataGenerator.generate_company_data()
@@ -456,7 +456,6 @@ def test_edit_company_name_updates_successfully(companies_page):
     assert not companies_page.is_company_visible(updated_name)
 
 @pytest.mark.tc_comp_017
-@pytest.mark.add_company
 def test_edit_company_name_duplicate_rejected(companies_page):
 
     data_a = TestDataGenerator.generate_company_data()
@@ -586,3 +585,156 @@ def test_suspend_and_unsuspend_company(companies_page):
     companies_page.delete_company(data["company_name"])
     companies_page.search_company(data["company_name"])
     assert not companies_page.is_company_visible(data["company_name"])
+
+
+@pytest.mark.tc_comp_019
+def test_search_with_non_existing_company_name(companies_page):
+
+    data = TestDataGenerator.generate_company_data()
+
+    # Create Company
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        data["company_name"],
+        data["domain"],
+        data["first_name"],
+        data["last_name"],
+        data["email"],
+        data["designation"],
+        data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert companies_page.is_company_created_popup_displayed(), \
+        "Company Created Successfully popup not displayed"
+
+    companies_page.click_done()
+
+    # Verify company exists
+    companies_page.search_company(
+        data["company_name"]
+    )
+
+    assert companies_page.is_company_visible(
+        data["company_name"]
+    ), "Created company is not visible"
+
+    # Search with invalid company name
+    companies_page.search_company(
+        "InvalidCompany123"
+    )
+
+    # Validate No Companies Found message
+    assert companies_page.is_no_companies_found_message_displayed(), \
+        "No companies found message is not displayed"
+
+    # Cleanup
+    companies_page.search_company(
+        data["company_name"]
+    )
+
+    companies_page.delete_company(
+        data["company_name"]
+    )
+
+    companies_page.search_company(
+        data["company_name"]
+    )
+
+    assert not companies_page.is_company_visible(
+        data["company_name"]
+    ), "Company was not deleted successfully"
+
+
+
+@pytest.mark.tc_comp_plan_change
+@pytest.mark.parametrize(
+    "tc_id,plan_dropdown_value,expected_plan",
+    [
+        ("TC_COMP_020","Fresh (Users: 10, Templates: 10)","Fresh"),
+        ("TC_COMP_021","Demo plan (Users: 5, Templates: 5)","Demo plan"),
+        ("TC_COMP_022","Basic (Users: 10, Templates: 8)","Basic"),
+        ("TC_COMP_023","Diamond (Users: 1, Templates: 1)","Diamond"),
+        ("TC_COMP_024","diamond one (Users: 5, Templates: 5)","diamond one"),
+        ("TC_COMP_025","EXCLUSIVE (Users: 5, Templates: 5)","EXCLUSIVE"),
+        ("TC_COMP_026","Demo123 (Users: 2, Templates: 1)","Demo123"),
+        ("TC_COMP_027","Enterprise (Users: 20, Templates: 18)","Enterprise"),
+        ("TC_COMP_028","Gold (Users: 10, Templates: 20)","Gold"),
+        ("TC_COMP_029","Silver (Users: 10, Templates: 12)","Silver")
+    ]
+)
+
+def test_change_company_plan(
+        companies_page,
+        tc_id,
+        plan_dropdown_value,
+        expected_plan
+):
+    print(f"\nExecuting {tc_id}")
+
+    data = TestDataGenerator.generate_company_data()
+
+    # Create Company
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        data["company_name"],
+        data["domain"],
+        data["first_name"],
+        data["last_name"],
+        data["email"],
+        data["designation"],
+        data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert companies_page.is_company_created_popup_displayed()
+
+    companies_page.click_done()
+
+    companies_page.search_company(
+        data["company_name"]
+    )
+
+    # Verify Default Plan
+    assert companies_page.get_company_plan(
+        data["company_name"]
+    ) == "Free"
+
+    # Change Plan
+    companies_page.click_change_plan(
+        data["company_name"]
+    )
+
+    companies_page.select_company_plan(
+        plan_dropdown_value
+    )
+
+    companies_page.click_update_plan()
+
+    companies_page.page.wait_for_timeout(2000)
+
+    companies_page.search_company(
+        data["company_name"]
+    )
+
+    # Verify Updated Plan
+    assert companies_page.get_company_plan(
+        data["company_name"]
+    ) == expected_plan
+
+    # Cleanup
+    companies_page.delete_company(
+        data["company_name"]
+    )
+
+    companies_page.search_company(
+        data["company_name"]
+    )
+
+    assert not companies_page.is_company_visible(
+        data["company_name"]
+    )
