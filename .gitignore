@@ -1,0 +1,39 @@
+# Byte-compiled / caching
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Distribution / virtualenv
+venv/
+env/
+ENV/
+.Python
+
+# Environment variables
+.env
+
+# Editor directories
+.vscode/
+.idea/
+
+# Test artifacts
+screenshots/
+videos/
+traces/
+traces/*.zip
+
+# pytest and Playwright
+playwright-report/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# cache
+*.log
+
+# Ignore compiled JS/CSS
+node_modules/
+

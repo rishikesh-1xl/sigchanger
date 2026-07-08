@@ -119,7 +119,20 @@ class CompaniesPage(BasePage):
 
     change_plan_popup = "text=Change Plan"
 
+#-------------deactivate companies------------------_#
+    deactivate_company_option = (
+    "//tr[td[contains(.,'{company_name}')]]"
+    "//button[contains(@class,'dropdown-item') and contains(.,'Deactivate Company')]"
+)
 
+    deactivate_button = ("//button[normalize-space()='Deactivate']")
+
+    deactivate_success_toast = ("//div[contains(text(),'Company deactivated successfully')]")
+    #--------------------decative company no edit ---------#
+
+    edit_icon = "button[title='Edit Company']"
+
+    edit_disabled_tooltip = "text=Unavailable while the company is deactivated."
     
 #-------------------------Methods---------------------------------#
 
@@ -434,3 +447,53 @@ class CompaniesPage(BasePage):
     def select_company_plan(self, plan_name):
 
         self.page.get_by_role("combobox").last.select_option(label=plan_name)
+
+    def click_deactivate_company(self,company_name):
+        self.open_company_actions_menu(company_name)
+        self.page.get_by_text("Deactivate Company").click()
+
+    def click_deactivate_button(self):
+        self.click(self.deactivate_button)
+
+    def is_company_deactivated_successfully(self):
+        return self.is_visible_with_wait(self.deactivate_success_toast)
+    
+    def get_company_status(self,company_name):
+        return self.page.locator(
+            f"//tr[td[contains(.,'{company_name}')]]//td[.//span[text()='Active'] or .//span[text()='Inactive'] or .//span[text()='Suspended']]//span"
+        ).text_content().strip()
+    
+    
+    
+    def get_edit_button(
+        self,
+        company_name
+):
+
+        row = self.page.locator(
+            f"tr:has-text('{company_name}')"
+        )
+
+        return row.locator(
+            "button[title='Unavailable while the company is deactivated.']"
+        )
+    
+    def is_edit_button_disabled(
+        self,
+        company_name
+):
+
+        return self.get_edit_button(
+            company_name
+        ).is_disabled()
+    
+    def get_edit_button_tooltip(
+        self,
+        company_name
+):
+
+        return self.get_edit_button(
+            company_name
+        ).get_attribute(
+            "title"
+        )
