@@ -229,10 +229,13 @@ class CompaniesPage(BasePage):
         self.fill(self.search_box,company_name)
 
 
-    def is_company_visible(self, company_name):
+    # def is_company_visible(self, company_name):
 
-        return self.page.locator(f"text={company_name}").count() > 0
+    #     return self.page.locator(f"text={company_name}").count() > 0
     
+    def is_company_visible(self,company_name):
+
+        return self.page.locator(f"tbody tr:has-text('{company_name}')").count() > 0
 
 
     def open_company_actions_menu(self,company_name):
@@ -248,6 +251,9 @@ class CompaniesPage(BasePage):
         self.page.get_by_text("Delete Company").click()
 
         self.page.get_by_role("button",name="Delete").click()
+
+        self.page.wait_for_timeout(2000)
+
 
     def click_done(self):
 
@@ -334,7 +340,7 @@ class CompaniesPage(BasePage):
 
     def click_update_company(self):
         self.click(self.update_company_btn)
-
+    
     def is_update_successful(self):
         return self.is_visible_with_wait(self.update_success_toast)
         
