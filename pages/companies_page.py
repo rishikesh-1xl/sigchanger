@@ -127,25 +127,24 @@ class CompaniesPage(BasePage):
 
         return "companies" in self.page.url.lower()
 
+    
     def are_page_controls_displayed(self):
-        
 
-        dropdown_count = self.page.locator("select").count()
+        search = self.is_visible_with_wait(self.search_box)
+        add_company = self.is_visible_with_wait(self.add_company_btn)
+        export_csv = self.is_visible_with_wait(self.export_csv_btn)
 
-        return (self.is_visible_with_wait(self.search_box)
+        plans = self.page.locator(self.all_plans_dropdown).is_visible()
+        status = self.page.locator(self.all_status_dropdown).is_visible()
+        types = self.page.locator(self.all_types_dropdown).is_visible()
 
-            and
-
-            self.is_visible_with_wait(self.add_company_btn)
-
-            and
-
-            dropdown_count >= 3
-
-            and
-
-            self.is_visible_with_wait(self.export_csv_btn)
-
+        return (
+            search
+            and add_company
+            and export_csv
+            and plans
+            and status
+            and types
         )
 
 
