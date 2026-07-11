@@ -6,9 +6,11 @@ from dotenv import load_dotenv
 
 from utilities.config_reader import Config
 from pages.login_page import LoginPage
+from pages.users_page import UsersPage
 
 from components.left_menu import LeftMenu
 from pages.companies_page import CompaniesPage
+
 
 load_dotenv()
 
@@ -88,3 +90,12 @@ def companies_page(login):
     menu.click_companies()
 
     return CompaniesPage(login)
+
+@pytest.fixture(scope="function")
+def users_page(login):
+
+    menu = LeftMenu(login)
+
+    menu.click_users()
+
+    return UsersPage(login)
