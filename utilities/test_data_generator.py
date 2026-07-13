@@ -127,3 +127,41 @@ class TestDataGenerator:
             "designation": designation,
             "department": department
         }
+    
+    @staticmethod
+    def generate_user_data():
+
+        timestamp = str(int(time.time()))
+
+        first_name = (
+            "FN" +
+            ''.join(random.choices(string.ascii_letters, k=5))
+        )
+
+        last_name = (
+            "LN" +
+            ''.join(random.choices(string.ascii_letters, k=5))
+        )
+
+        email = f"user{timestamp}@mailinator.com"
+
+        designation = (
+            "QA" +
+            ''.join(random.choices(string.ascii_letters, k=3))
+        )
+
+        department = (
+            "Dept" +
+            ''.join(random.choices(string.ascii_letters, k=3))
+        )
+
+        phone = "9876543210"
+
+        return {
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "phone": phone,
+            "designation": designation,
+            "department": department
+        }
