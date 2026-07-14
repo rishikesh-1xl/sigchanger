@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+
+# Pytest
+.pytest_cache/
+
+# Playwright
+videos/
+screenshots/
+traces/
+
+# Allure
+allure-results/
+
+# Backup folders
+backup_untracked_*/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+
+# Pytest
+.pytest_cache/
+.cache/
+
+# Playwright
+playwright-report/
+test-results/
+traces/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage
+.coverage
+htmlcov/
+coverage.xml
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
