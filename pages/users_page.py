@@ -75,6 +75,36 @@ class UsersPage(BasePage):
     #-----toggle user status-----------------
     user_status_toggle = "button[title='Deactivate User']"
 
+    #----------eye icon locators---------------#
+
+    impersonate_popup_title = "text=Impersonate User"
+
+    start_impersonation_btn = "text=Start Impersonation"
+
+    cancel_impersonation_btn = "text=Cancel"
+
+    # Reset Password Icon
+
+    reset_password_icon = "button[title='Reset Password']"
+    
+    reset_password_popup_title = "h2:has-text('Reset Password')"
+
+    cancel_reset_password_btn = "text=Cancel"
+
+    confirm_reset_password_btn = "text=Reset Password"
+
+    #-----------------Edit Company Details-----------------
+
+    edit_user_icon = "button[title='Edit User']"
+
+    edit_user_page_title = "h1:has-text('Edit User')"
+
+    email_field = "input[placeholder='Enter Email ID']"
+
+    company_dropdown = "select[name='company']"
+
+    cancel_edit_user_btn = "text=Cancel"
+
 
     def get_page_title(self):
 
@@ -284,6 +314,60 @@ class UsersPage(BasePage):
             "button[title='Deactivate User']"
         )
 
-        print("Toggle Count =", toggle.count())
-
         return toggle.count() > 0
+    
+    #----------------View user icon---------------#
+
+    def click_view_user(self, email):
+
+        row = self.page.locator(f"tr:has-text('{email}')")
+
+        row.locator("button[title='Impersonate (view only)']").click()
+
+    def is_impersonate_popup_displayed(self):
+
+        return self.is_visible_with_wait(self.impersonate_popup_title)
+    
+    def click_cancel_impersonation(self):
+
+        self.click(self.cancel_impersonation_btn)
+
+        #----------------Reset Password Icon----------------#
+    
+    def click_reset_password(self, email):
+
+        row = self.page.locator(f"tr:has-text('{email}')")
+
+        row.locator("button[title='Reset Password']").click()
+    
+    def is_reset_password_popup_displayed(self):
+
+        return self.is_visible_with_wait(self.reset_password_popup_title)
+    
+    def click_cancel_reset_password(self):
+
+        self.click(self.cancel_reset_password_btn)
+    
+     #-----------------Edit Company Details-----------------
+
+    def click_edit_user(self, email):
+
+        row = self.page.locator(f"tr:has-text('{email}')")
+
+        row.locator(self.edit_user_icon).click()
+    
+    def is_edit_user_page_displayed(self):
+
+        return self.is_visible_with_wait(self.edit_user_page_title)
+    
+    def is_email_field_disabled(self):
+
+        return self.page.locator(self.email_field).is_disabled()
+    
+    def is_company_dropdown_disabled(self):
+
+        return self.page.locator(self.company_dropdown).is_disabled()
+
+    def click_cancel_edit_user(self):
+
+        self.click(self.cancel_edit_user_btn)

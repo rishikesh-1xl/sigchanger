@@ -40,7 +40,6 @@ def page(playwright: Playwright):
     page = context.new_page()
 
     page.set_default_timeout(Config.TIMEOUT)
-    # print("Viewport Size:", page.viewport_size)
     yield page
 
     os.makedirs("traces", exist_ok=True)

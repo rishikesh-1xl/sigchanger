@@ -408,7 +408,7 @@ def test_add_company_admin_user_successfully(companies_page):
         company_data["email"]
     )
 
-    print(users_page.page.locator("tbody tr").first.text_content())
+    # print(users_page.page.locator("tbody tr").first.text_content())
 
     # Verify User Exists
 
@@ -608,6 +608,298 @@ def test_user_status_toggle_visible(companies_page):
     # Verify Toggle Visible
 
     assert users_page.is_user_status_toggle_visible(user_data["email"]), "User status toggle is not visible"
+
+    # Cleanup
+
+    menu.click_companies()
+
+    companies_page.search_company(
+        company_data["company_name"]
+    )
+
+    companies_page.delete_company(
+        company_data["company_name"]
+    )
+
+@pytest.mark.tc_user_014
+def test_view_user_icon_opens_popup(companies_page):
+
+    company_data = TestDataGenerator.generate_company_data()
+
+    user_data = TestDataGenerator.generate_user_data()
+
+    user_data["email"] = (
+        f"user{int(time.time())}@{company_data['domain']}"
+    )
+
+    # Create Company
+
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        company_data["company_name"],
+        company_data["domain"],
+        company_data["first_name"],
+        company_data["last_name"],
+        company_data["email"],
+        company_data["designation"],
+        company_data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert companies_page.is_company_created_popup_displayed()
+
+    companies_page.click_done()
+
+    # Navigate to Users
+
+    menu = LeftMenu(companies_page.page)
+
+    menu.click_users()
+
+    users_page = UsersPage(companies_page.page)
+
+    # Create Employee
+
+    users_page.click_add_user()
+
+    users_page.enter_user_details(
+        user_data["first_name"],
+        user_data["last_name"],
+        user_data["email"],
+        user_data["phone"],
+        user_data["designation"],
+        user_data["department"]
+    )
+
+    users_page.select_company(
+        company_data["company_name"]
+    )
+
+    users_page.select_role(
+        "Employee"
+    )
+
+    users_page.click_add_user_save()
+
+    # Search User
+
+    users_page.search_user(
+        user_data["email"]
+    )
+
+    # Click View User Icon
+
+    users_page.click_view_user(
+        user_data["email"]
+    )
+
+    # Verify Popup Opened
+
+    assert users_page.is_impersonate_popup_displayed(), \
+        "Impersonate User popup not displayed"
+
+    # Close Popup
+
+    users_page.click_cancel_impersonation()
+
+    # Cleanup
+
+    menu.click_companies()
+
+    companies_page.search_company(
+        company_data["company_name"]
+    )
+
+    companies_page.delete_company(
+        company_data["company_name"]
+    )
+
+@pytest.mark.tc_user_015
+def test_reset_password_icon_opens_popup(companies_page):
+
+    company_data = TestDataGenerator.generate_company_data()
+
+    user_data = TestDataGenerator.generate_user_data()
+
+    user_data["email"] = (
+        f"user{int(time.time())}@{company_data['domain']}"
+    )
+
+    # Create Company
+
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        company_data["company_name"],
+        company_data["domain"],
+        company_data["first_name"],
+        company_data["last_name"],
+        company_data["email"],
+        company_data["designation"],
+        company_data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert companies_page.is_company_created_popup_displayed()
+
+    companies_page.click_done()
+
+    # Navigate to Users
+
+    menu = LeftMenu(companies_page.page)
+
+    menu.click_users()
+
+    users_page = UsersPage(companies_page.page)
+
+    # Create Employee
+
+    users_page.click_add_user()
+
+    users_page.enter_user_details(
+        user_data["first_name"],
+        user_data["last_name"],
+        user_data["email"],
+        user_data["phone"],
+        user_data["designation"],
+        user_data["department"]
+    )
+
+    users_page.select_company(
+        company_data["company_name"]
+    )
+
+    users_page.select_role(
+        "Employee"
+    )
+
+    users_page.click_add_user_save()
+
+    # Search User
+
+    users_page.search_user(
+        user_data["email"]
+    )
+
+    # Click Reset Password
+
+    users_page.click_reset_password(
+        user_data["email"]
+    )
+
+    # Verify Popup
+
+    assert users_page.is_reset_password_popup_displayed(), \
+        "Reset Password popup not displayed"
+
+    # Close Popup
+
+    users_page.click_cancel_reset_password()
+
+    # Cleanup
+
+    menu.click_companies()
+
+    companies_page.search_company(
+        company_data["company_name"]
+    )
+
+    companies_page.delete_company(
+        company_data["company_name"]
+    )
+
+@pytest.mark.tc_user_016
+def test_edit_user_icon_opens_edit_screen(companies_page):
+
+    company_data = TestDataGenerator.generate_company_data()
+
+    user_data = TestDataGenerator.generate_user_data()
+
+    user_data["email"] = (
+        f"user{int(time.time())}@{company_data['domain']}"
+    )
+
+    # Create Company
+
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        company_data["company_name"],
+        company_data["domain"],
+        company_data["first_name"],
+        company_data["last_name"],
+        company_data["email"],
+        company_data["designation"],
+        company_data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert companies_page.is_company_created_popup_displayed()
+
+    companies_page.click_done()
+
+    # Navigate Users
+
+    menu = LeftMenu(companies_page.page)
+
+    menu.click_users()
+
+    users_page = UsersPage(companies_page.page)
+
+    # Create Employee
+
+    users_page.click_add_user()
+
+    users_page.enter_user_details(
+        user_data["first_name"],
+        user_data["last_name"],
+        user_data["email"],
+        user_data["phone"],
+        user_data["designation"],
+        user_data["department"]
+    )
+
+    users_page.select_company(
+        company_data["company_name"]
+    )
+
+    users_page.select_role(
+        "Employee"
+    )
+
+    users_page.click_add_user_save()
+
+    # Search User
+
+    users_page.search_user(
+        user_data["email"]
+    )
+
+    # Click Edit
+
+    users_page.click_edit_user(
+        user_data["email"]
+    )
+
+    # Verify Edit Screen
+
+    assert users_page.is_edit_user_page_displayed()
+
+    # Verify Email Disabled
+
+    assert users_page.is_email_field_disabled()
+
+    # Verify Company Disabled
+
+    assert users_page.is_company_dropdown_disabled()
+
+    # Return to User List
+
+    users_page.click_cancel_edit_user()
 
     # Cleanup
 
