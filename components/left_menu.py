@@ -5,7 +5,8 @@ class LeftMenu(BasePage):
 
     companies_menu = "//span[text()='Companies']"
 
-    users_menu = "text=All Users"
+    # users_menu = "text=All Users"
+    users_menu = "//aside//span[text()='All Users']"
 
     plans_menu = "text=Plans"
 

@@ -17,6 +17,9 @@ class UsersPage(BasePage):
 
     export_csv_btn = "text=Export CSV"
 
+    export_success_msg = \
+    "text=Users exported successfully."
+
     add_user_btn = "text=Add User"
 
     #----------------bedcrum navigation-----------------
@@ -101,9 +104,23 @@ class UsersPage(BasePage):
 
     email_field = "input[placeholder='Enter Email ID']"
 
-    company_dropdown = "select[name='company']"
+    company_dropdown_edit = "select[name='company']"
 
     cancel_edit_user_btn = "text=Cancel"
+
+    #----------------validate role selection ---------------#
+
+    edit_role_dropdown = "select[name='role']"
+    update_user_btn = "button:has-text('Update User')"
+    
+    #---------deactivate user-----------------
+
+    deactivate_user_popup_title = "text=Deactivate User"
+
+    confirm_deactivate_btn = "button:has-text('Deactivate')"
+
+    user_deactivated_success_msg = \
+        "text=User deactivated successfully"
 
 
     def get_page_title(self):
@@ -136,6 +153,8 @@ class UsersPage(BasePage):
             and company
             and export_csv
             and add_user)
+
+    
     
     #-----------------bedcrumb navigation check-----------------
         
@@ -366,8 +385,77 @@ class UsersPage(BasePage):
     
     def is_company_dropdown_disabled(self):
 
-        return self.page.locator(self.company_dropdown).is_disabled()
+        return self.page.locator(self.company_dropdown_edit).is_disabled()
 
     def click_cancel_edit_user(self):
 
         self.click(self.cancel_edit_user_btn)
+
+        #----------------validate role selection ---------------#
+    
+    def get_user_role(self, email):
+
+        row = self.page.locator(f"tr:has-text('{email}')")
+
+        return row.locator("td").nth(4).text_content().strip()
+    
+    def select_edit_role(self, role):
+
+        self.select_dropdown_by_text(self.edit_role_dropdown,role)
+
+    def click_update_user(self):
+
+        self.click(self.update_user_btn)
+
+    #---------deactivate user-----------------
+
+    def click_status_toggle(self, email):
+
+        row = self.page.locator(
+            f"tr:has-text('{email}')"
+        )
+
+        row.locator(
+            "button[title='Deactivate User']"
+        ).click()
+
+    def is_deactivate_popup_displayed(self):
+
+        return self.is_visible_with_wait(
+            self.deactivate_user_popup_title
+        )
+    
+    def click_confirm_deactivate(self):
+
+        self.click(
+            self.confirm_deactivate_btn
+        )
+
+    def is_user_deactivated_successfully(self):
+
+        return self.is_visible_with_wait(
+            self.user_deactivated_success_msg
+        )
+
+    def get_user_status(self, email):
+
+        row = self.page.locator(
+            f"tr:has-text('{email}')"
+        )
+
+        return (
+            row.locator("span")
+            .filter(has_text="Active")
+            .first
+            .text_content()
+            .strip()
+        )
+#--------------export button functionality-----------------
+
+    def click_export_csv(self):
+
+        self.click(self.export_csv_btn)
+    
+    def is_export_success_msg_displayed(self):
+
+        return self.is_visible_with_wait(self.export_success_msg)
