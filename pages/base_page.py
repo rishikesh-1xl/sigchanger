@@ -41,3 +41,7 @@ class BasePage:
             options.nth(i).text_content().strip()
             for i in range(options.count())
         ]
+    
+    def select_dropdown_by_text(self, locator, text):
+
+        self.page.locator(locator).select_option(label=text)

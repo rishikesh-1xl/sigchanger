@@ -912,3 +912,237 @@ def test_edit_user_icon_opens_edit_screen(companies_page):
     companies_page.delete_company(
         company_data["company_name"]
     )
+
+@pytest.mark.tc_user_017
+def test_role_column_displays_updated_role(companies_page):
+
+    company_data = (
+        TestDataGenerator.generate_company_data()
+    )
+
+    # Create Company
+
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        company_data["company_name"],
+        company_data["domain"],
+        company_data["first_name"],
+        company_data["last_name"],
+        company_data["email"],
+        company_data["designation"],
+        company_data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert (
+        companies_page
+        .is_company_created_popup_displayed()
+    )
+
+    companies_page.click_done()
+
+    # Navigate Users
+
+    menu = LeftMenu(companies_page.page)
+
+    menu.click_users()
+
+    users_page = UsersPage(
+        companies_page.page
+    )
+
+    # Search Company Admin
+
+    users_page.search_user(
+        company_data["email"]
+    )
+
+    # Verify Default Role
+
+    assert (
+        users_page.get_user_role(
+            company_data["email"]
+        )
+        == "Company Admin"
+    )
+
+    # Edit User
+
+    users_page.click_edit_user(
+        company_data["email"]
+    )
+
+    # Change Role
+
+    users_page.select_edit_role(
+        "Employee"
+    )
+
+    users_page.click_update_user()
+
+    # Verify Success Message
+
+    assert (
+        "User updated successfully"
+        in users_page.page.locator("body").text_content()
+    )
+
+    # Navigate Back To Users
+
+    menu.click_users()
+
+    # Search Again
+
+    users_page.search_user(
+        company_data["email"]
+    )
+
+    # Verify Updated Role
+
+    assert (
+        users_page.get_user_role(
+            company_data["email"]
+        )
+        == "Employee"
+    ), "Role was not updated to Employee"
+
+    # Cleanup
+
+    menu.click_companies()
+
+    companies_page.search_company(
+        company_data["company_name"]
+    )
+
+    companies_page.delete_company(
+        company_data["company_name"]
+    )
+
+@pytest.mark.tc_user_018
+def test_status_badge_changes_when_user_deactivated(
+        companies_page):
+
+    company_data = (
+        TestDataGenerator.generate_company_data()
+    )
+
+    # Create Company
+
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        company_data["company_name"],
+        company_data["domain"],
+        company_data["first_name"],
+        company_data["last_name"],
+        company_data["email"],
+        company_data["designation"],
+        company_data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert (
+        companies_page
+        .is_company_created_popup_displayed()
+    )
+
+    companies_page.click_done()
+
+    # Navigate Users
+
+    menu = LeftMenu(companies_page.page)
+
+    menu.click_users()
+
+    users_page = UsersPage(
+        companies_page.page
+    )
+
+    # Search User
+
+    users_page.search_user(
+        company_data["email"]
+    )
+
+    # Verify Initial Status
+
+    assert (
+        users_page.get_user_status(
+            company_data["email"]
+        )
+        == "Active"
+    )
+
+    # Click Toggle
+
+    users_page.click_status_toggle(
+        company_data["email"]
+    )
+
+    # Verify Popup
+
+    assert (
+        users_page
+        .is_deactivate_popup_displayed()
+    )
+
+    # Confirm Deactivate
+
+    users_page.click_confirm_deactivate()
+
+    # Verify Success Message
+
+    assert (
+        users_page
+        .is_user_deactivated_successfully()
+    )
+
+    # Search Again
+
+    users_page.search_user(
+        company_data["email"]
+    )
+
+    # Verify Status Changed
+
+    assert (
+        users_page.get_user_status(
+            company_data["email"]
+        )
+        == "Inactive"
+    )
+
+    # Cleanup
+
+    menu.click_companies()
+
+    companies_page.search_company(
+        company_data["company_name"]
+    )
+
+    companies_page.delete_company(
+        company_data["company_name"]
+    )
+
+@pytest.mark.tc_user_019
+def test_export_csv_functionality(
+        companies_page):
+
+    menu = LeftMenu(
+        companies_page.page
+    )
+
+    menu.click_users()
+
+    users_page = UsersPage(
+        companies_page.page
+    )
+
+    users_page.click_export_csv()
+
+    assert (
+    users_page.is_export_success_msg_displayed()
+), "Export success message not displayed"
