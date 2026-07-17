@@ -1128,8 +1128,50 @@ def test_status_badge_changes_when_user_deactivated(
     )
 
 @pytest.mark.tc_user_019
-def test_export_csv_functionality(
+def test_export_csv_functionality(companies_page):
+
+    menu = LeftMenu(companies_page.page)
+
+    menu.click_users()
+
+    users_page = UsersPage(companies_page.page)
+
+    users_page.click_export_csv()
+
+    assert (users_page.is_export_success_msg_displayed()), "Export success message not displayed"
+
+@pytest.mark.tc_user_020
+def test_user_impersonation_functionality(
         companies_page):
+
+    company_data = (
+        TestDataGenerator.generate_company_data()
+    )
+
+    # Create Company
+
+    companies_page.click_add_company()
+
+    companies_page.enter_company_details(
+        company_data["company_name"],
+        company_data["domain"],
+        company_data["first_name"],
+        company_data["last_name"],
+        company_data["email"],
+        company_data["designation"],
+        company_data["department"]
+    )
+
+    companies_page.click_create_company()
+
+    assert (
+        companies_page
+        .is_company_created_popup_displayed()
+    )
+
+    companies_page.click_done()
+
+    # Navigate To All Users
 
     menu = LeftMenu(
         companies_page.page
@@ -1141,8 +1183,69 @@ def test_export_csv_functionality(
         companies_page.page
     )
 
-    users_page.click_export_csv()
+    # Search Company Admin User
+
+    users_page.search_user(
+        company_data["email"]
+    )
+
+    # Click Eye Icon
+
+    users_page.click_view_user(
+        company_data["email"]
+    )
+
+    # Verify Impersonation Popup
 
     assert (
-    users_page.is_export_success_msg_displayed()
-), "Export success message not displayed"
+    users_page
+    .is_impersonate_popup_displayed()
+), "Impersonation popup not displayed"
+
+    # Start Impersonation
+
+    users_page.click_start_impersonation()
+
+    # Verify View Only Banner
+
+    assert (
+        users_page
+        .is_impersonation_banner_displayed()
+    ), "Impersonation banner not displayed"
+
+    # Verify Company Name
+
+    assert (
+        users_page
+        .is_company_name_displayed(
+            company_data["company_name"]
+        )
+    ), "Company name not displayed"
+
+    # Exit Impersonation
+
+    users_page.click_exit_impersonation()
+
+    users_page.page.wait_for_url(
+    "**/all-users",
+    timeout=10000
+)
+
+    # Verify Back To Users Page
+
+    assert (
+        users_page
+        .is_all_users_page_displayed()
+    ), "All Users page not displayed"
+
+    # Cleanup
+
+    menu.click_companies()
+
+    companies_page.search_company(
+        company_data["company_name"]
+    )
+
+    companies_page.delete_company(
+        company_data["company_name"]
+    )
