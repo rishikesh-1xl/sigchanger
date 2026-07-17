@@ -86,6 +86,14 @@ class UsersPage(BasePage):
 
     cancel_impersonation_btn = "text=Cancel"
 
+    # Impersonation
+
+    exit_impersonation_btn = "button:has-text('Exit Impersonation')"
+
+    impersonation_banner = "text=view only"
+
+    impersonation_company_name = "header"
+
     # Reset Password Icon
 
     reset_password_icon = "button[title='Reset Password']"
@@ -459,3 +467,46 @@ class UsersPage(BasePage):
     def is_export_success_msg_displayed(self):
 
         return self.is_visible_with_wait(self.export_success_msg)
+    
+    # ------------------start impersonification-----------
+
+    def click_start_impersonation(self):
+
+        self.click(self.start_impersonation_btn)
+
+    def is_impersonation_banner_displayed(self):
+
+        return self.is_visible_with_wait(self.impersonation_banner)
+    
+    def is_company_name_displayed(
+        self,
+        company_name):
+
+        return (
+            company_name
+            in
+            self.page.locator(
+                "body"
+            ).text_content()
+        )
+    
+    def click_exit_impersonation(self):
+
+        self.click(self.exit_impersonation_btn)
+    
+    def is_all_users_page_displayed(self):
+
+        return self.page.locator(
+            "h1:has-text('All Users')"
+        ).is_visible()
+    
+    def verify_impersonation_user_name(
+        self,
+        first_name):
+
+        return (
+            first_name
+            in
+            self.page.locator(
+                "body"
+            ).text_content())
