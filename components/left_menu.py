@@ -79,3 +79,13 @@ class LeftMenu(BasePage):
         self.click(
             self.platform_settings_menu
         )
+    
+    def click_plans(self):
+
+        self.page.locator(
+            self.plans_menu
+        ).scroll_into_view_if_needed()
+
+        self.click(
+            self.plans_menu
+        )
