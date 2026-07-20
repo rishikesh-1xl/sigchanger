@@ -45,3 +45,7 @@ class BasePage:
     def select_dropdown_by_text(self, locator, text):
 
         self.page.locator(locator).select_option(label=text)
+    
+    def get_validation_message(self, locator):
+
+        return self.page.locator(locator).text_content().strip()

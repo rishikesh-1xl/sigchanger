@@ -28,3 +28,103 @@ def test_yearly_toggle_visible(plans_page):
     assert plans_page.is_visible_with_wait(
         plans_page.yearly_toggle
     ), "Yearly toggle is not visible"
+
+
+@pytest.mark.tc_plans_005
+def test_create_plan_page_opens(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+
+@pytest.mark.tc_plans_006
+def test_cancel_button_returns_to_plans_page(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    plans_page.click_cancel()
+
+    assert plans_page.is_plans_page_displayed(), \
+        "User is not redirected to Plans page after clicking Cancel."
+    
+@pytest.mark.tc_plans_007
+def test_mandatory_field_validations(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed()
+
+    plans_page.click_submit_create_plan()
+
+    assert plans_page.get_validation_message(
+        plans_page.plan_name_validation
+    ) == "Plan Name is required."
+
+    assert plans_page.get_validation_message(
+        plans_page.slug_validation
+    ) == "Slug is required."
+
+    assert plans_page.get_validation_message(
+        plans_page.max_users_validation
+    ) == "Max Users is required and must be a whole number of at least 1."
+
+    assert plans_page.get_validation_message(
+        plans_page.max_templates_validation
+    ) == "Max Templates is required and must be a whole number of at least 1."
+
+@pytest.mark.tc_plans_008
+def test_priority_support_checkbox(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    plans_page.click_priority_support()
+
+    assert plans_page.is_priority_support_checked(), \
+        "Priority Support checkbox is not checked."
+    
+@pytest.mark.tc_plans_009
+def test_custom_integrations_checkbox(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    plans_page.click_custom_integrations()
+
+    assert plans_page.is_custom_integrations_checked(), \
+        "Custom Integrations checkbox is not checked."
+    
+@pytest.mark.tc_plans_010
+def test_most_popular_badge_checkbox(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    plans_page.click_most_popular_badge()
+
+    assert plans_page.is_most_popular_badge_checked(), \
+        "Most Popular Badge checkbox is not checked."
+    
+@pytest.mark.tc_plans_011
+def test_enterprise_checkbox(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    plans_page.click_enterprise()
+
+    assert plans_page.is_enterprise_checked(), \
+        "Enterprise checkbox is not checked."

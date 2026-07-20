@@ -11,7 +11,7 @@ class PlansPage(BasePage):
 
     create_plan_btn = "a[href='/plans/new']"
 
-    # Toggle
+    #-------------------------------- Toggle---------------------------------
 
     monthly_toggle = "//button[text()='Monthly']"
 
@@ -21,7 +21,7 @@ class PlansPage(BasePage):
 
     plan_cards = ".rounded-xl"
 
-    # Actions
+    #---------------------- Actions --------------------------------------
 
     edit_btn = "button:has-text('Edit')"
 
@@ -31,6 +31,37 @@ class PlansPage(BasePage):
 
     active_badge = "text=Active"
 
+    # ----------------Create Plan Page ---------------------------
+
+    create_plan_heading = "//h1[text()='Create Plan']"
+
+    cancel_btn = "button:has-text('Cancel')"
+
+    create_plan_save_btn = "a[href='/plans/new']"
+
+    submit_create_plan_btn = "button:has-text('Create Plan')"
+
+    # -----------Validation Messages-------------------
+
+    plan_name_validation = "text='Plan Name is required.'"
+
+    slug_validation = "text='Slug is required.'"
+
+    max_users_validation = "text='Max Users is required and must be a whole number of at least 1.'"
+
+    max_templates_validation = "text='Max Templates is required and must be a whole number of at least 1.'"
+
+    #---------------create plan checkbox------------------
+
+    priority_support_checkbox = "label:has-text('Priority Support') input[type='checkbox']"
+
+    custom_integrations_checkbox = "label:has-text('Custom Integrations') input[type='checkbox']"
+
+    most_popular_badge_checkbox = "label:has-text(\"Show 'Most Popular' badge\") input[type='checkbox']"
+
+    enterprise_checkbox = "label:has-text('Enterprise (custom pricing)') input[type='checkbox']"
+
+    
     def get_page_title(self):
 
         return self.page.locator(
@@ -67,11 +98,83 @@ class PlansPage(BasePage):
         return self.is_visible_with_wait(
             self.create_plan_btn
         )
-    def click_create_plan(self):
 
-        self.click(
-            self.create_plan_btn
+#------------create plan-----------------
+    def is_create_plan_page_displayed(self):
+
+        return self.is_visible_with_wait(
+            self.create_plan_heading
         )
-#------------month;y toggle-----------------
+
+    def click_cancel(self):
+
+        self.click(self.cancel_btn)
+
+
+    def click_submit_create_plan(self):
+
+        self.click(self.submit_create_plan_btn)
 
     
+    def get_validation_message(self, locator):
+
+        return self.page.locator(locator).text_content().strip()
+    
+    #---------------create plan check box-----------------#
+
+    def click_priority_support(self):
+
+        self.page.locator(self.priority_support_checkbox).scroll_into_view_if_needed()
+
+        self.click(self.priority_support_checkbox)
+
+
+    def is_priority_support_checked(self):
+
+        return self.page.locator(self.priority_support_checkbox).is_checked()
+    
+
+    def click_custom_integrations(self):
+
+        self.page.locator(self.custom_integrations_checkbox).scroll_into_view_if_needed()
+
+        self.click(self.custom_integrations_checkbox)
+
+
+    def is_custom_integrations_checked(self):
+
+        return self.page.locator(self.custom_integrations_checkbox).is_checked()
+    
+    def click_most_popular_badge(self):
+
+        self.page.locator(
+            self.most_popular_badge_checkbox
+        ).scroll_into_view_if_needed()
+
+        self.click(
+            self.most_popular_badge_checkbox
+        )
+
+
+    def is_most_popular_badge_checked(self):
+
+        return self.page.locator(
+            self.most_popular_badge_checkbox
+        ).is_checked()
+    
+    def click_enterprise(self):
+
+        self.page.locator(
+            self.enterprise_checkbox
+        ).scroll_into_view_if_needed()
+
+        self.click(
+            self.enterprise_checkbox
+        )
+
+
+    def is_enterprise_checked(self):
+
+        return self.page.locator(
+            self.enterprise_checkbox
+        ).is_checked()
