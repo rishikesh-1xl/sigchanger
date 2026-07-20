@@ -49,3 +49,19 @@ class BasePage:
     def get_validation_message(self, locator):
 
         return self.page.locator(locator).text_content().strip()
+    
+    
+    def click_checkbox(self, locator):
+
+        checkbox = self.page.locator(locator)
+
+        checkbox.scroll_into_view_if_needed()
+
+        checkbox.wait_for(state="visible")
+
+        checkbox.check()
+
+
+    def is_checkbox_checked(self, locator):
+
+        return self.page.locator(locator).is_checked()

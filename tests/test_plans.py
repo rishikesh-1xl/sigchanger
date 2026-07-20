@@ -85,10 +85,14 @@ def test_priority_support_checkbox(plans_page):
     assert plans_page.is_create_plan_page_displayed(), \
         "Create Plan page is not displayed."
 
-    plans_page.click_priority_support()
+    plans_page.click_checkbox(
+        plans_page.priority_support_checkbox
+    )
 
-    assert plans_page.is_priority_support_checked(), \
-        "Priority Support checkbox is not checked."
+    assert plans_page.is_checkbox_checked(
+        plans_page.priority_support_checkbox
+    ), "Priority Support checkbox is not checked."
+
     
 @pytest.mark.tc_plans_009
 def test_custom_integrations_checkbox(plans_page):
@@ -98,10 +102,13 @@ def test_custom_integrations_checkbox(plans_page):
     assert plans_page.is_create_plan_page_displayed(), \
         "Create Plan page is not displayed."
 
-    plans_page.click_custom_integrations()
+    plans_page.click_checkbox(
+        plans_page.custom_integrations_checkbox
+    )
 
-    assert plans_page.is_custom_integrations_checked(), \
-        "Custom Integrations checkbox is not checked."
+    assert plans_page.is_checkbox_checked(
+        plans_page.custom_integrations_checkbox
+    ), "Custom Integrations checkbox is not checked."
     
 @pytest.mark.tc_plans_010
 def test_most_popular_badge_checkbox(plans_page):
@@ -111,10 +118,13 @@ def test_most_popular_badge_checkbox(plans_page):
     assert plans_page.is_create_plan_page_displayed(), \
         "Create Plan page is not displayed."
 
-    plans_page.click_most_popular_badge()
+    plans_page.click_checkbox(
+        plans_page.most_popular_badge_checkbox
+    )
 
-    assert plans_page.is_most_popular_badge_checked(), \
-        "Most Popular Badge checkbox is not checked."
+    assert plans_page.is_checkbox_checked(
+        plans_page.most_popular_badge_checkbox
+    ), "Most Popular Badge checkbox is not checked."
     
 @pytest.mark.tc_plans_011
 def test_enterprise_checkbox(plans_page):
@@ -124,7 +134,10 @@ def test_enterprise_checkbox(plans_page):
     assert plans_page.is_create_plan_page_displayed(), \
         "Create Plan page is not displayed."
 
-    plans_page.click_enterprise()
+    plans_page.click_checkbox(
+        plans_page.enterprise_checkbox
+    )
 
-    assert plans_page.is_enterprise_checked(), \
-        "Enterprise checkbox is not checked."
+    assert plans_page.is_checkbox_checked(
+        plans_page.enterprise_checkbox
+    ), "Enterprise checkbox is not checked."

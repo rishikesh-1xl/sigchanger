@@ -61,7 +61,7 @@ class PlansPage(BasePage):
 
     enterprise_checkbox = "label:has-text('Enterprise (custom pricing)') input[type='checkbox']"
 
-    
+
     def get_page_title(self):
 
         return self.page.locator(
@@ -119,62 +119,6 @@ class PlansPage(BasePage):
     def get_validation_message(self, locator):
 
         return self.page.locator(locator).text_content().strip()
+   
+
     
-    #---------------create plan check box-----------------#
-
-    def click_priority_support(self):
-
-        self.page.locator(self.priority_support_checkbox).scroll_into_view_if_needed()
-
-        self.click(self.priority_support_checkbox)
-
-
-    def is_priority_support_checked(self):
-
-        return self.page.locator(self.priority_support_checkbox).is_checked()
-    
-
-    def click_custom_integrations(self):
-
-        self.page.locator(self.custom_integrations_checkbox).scroll_into_view_if_needed()
-
-        self.click(self.custom_integrations_checkbox)
-
-
-    def is_custom_integrations_checked(self):
-
-        return self.page.locator(self.custom_integrations_checkbox).is_checked()
-    
-    def click_most_popular_badge(self):
-
-        self.page.locator(
-            self.most_popular_badge_checkbox
-        ).scroll_into_view_if_needed()
-
-        self.click(
-            self.most_popular_badge_checkbox
-        )
-
-
-    def is_most_popular_badge_checked(self):
-
-        return self.page.locator(
-            self.most_popular_badge_checkbox
-        ).is_checked()
-    
-    def click_enterprise(self):
-
-        self.page.locator(
-            self.enterprise_checkbox
-        ).scroll_into_view_if_needed()
-
-        self.click(
-            self.enterprise_checkbox
-        )
-
-
-    def is_enterprise_checked(self):
-
-        return self.page.locator(
-            self.enterprise_checkbox
-        ).is_checked()
