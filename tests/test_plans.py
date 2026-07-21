@@ -141,3 +141,120 @@ def test_enterprise_checkbox(plans_page):
     assert plans_page.is_checkbox_checked(
         plans_page.enterprise_checkbox
     ), "Enterprise checkbox is not checked."
+
+@pytest.mark.tc_plans_012
+def test_sync_interval_visibility_based_on_auto_sync(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    # Verify Auto-Sync is unchecked by default
+    assert not plans_page.is_checkbox_checked(
+        plans_page.auto_sync_checkbox
+    ), "Auto-Sync checkbox should be unchecked by default."
+
+    # Verify Sync Interval dropdown is hidden
+    assert not plans_page.is_visible(
+        plans_page.sync_interval_dropdown
+    ), "Sync Interval dropdown should not be visible."
+
+    # Check Auto-Sync
+    plans_page.click_checkbox(
+    plans_page.auto_sync_checkbox
+)
+
+    plans_page.wait_for_state(
+        plans_page.sync_interval_dropdown,
+        state="visible"
+    )
+
+    assert plans_page.is_visible(
+        plans_page.sync_interval_dropdown
+    )
+
+    plans_page.uncheck_checkbox(
+        plans_page.auto_sync_checkbox
+    )
+
+    plans_page.wait_for_state(
+        plans_page.sync_interval_dropdown,
+        state="hidden"
+    )
+
+    assert not plans_page.is_visible(
+        plans_page.sync_interval_dropdown
+    ), "Sync Interval dropdown should be hidden."
+
+
+@pytest.mark.tc_plans_013
+def test_sync_interval_dropdown_options(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    plans_page.click_checkbox(
+        plans_page.auto_sync_checkbox
+    )
+
+    assert plans_page.is_visible_with_wait(
+        plans_page.sync_interval_dropdown
+    )
+
+    expected_options = [
+        "None",
+        "Hourly",
+        "Daily",
+        "Weekly",
+        "Monthly",
+        "Custom"
+    ]
+
+    actual_options = plans_page.get_dropdown_options(
+        plans_page.sync_interval_dropdown
+    )
+
+    assert actual_options == expected_options, \
+        f"Expected {expected_options}, but got {actual_options}"
+    
+@pytest.mark.tc_plans_014
+def test_billing_interval_dropdown_options(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    expected_options = [
+        "Monthly",
+        "Yearly"
+    ]
+
+    actual_options = plans_page.get_dropdown_options(
+        plans_page.billing_interval_dropdown
+    )
+
+    assert actual_options == expected_options, \
+        f"Expected {expected_options}, but got {actual_options}"
+    
+#-----------------------------Country-wise Package form.------------------
+
+
+@pytest.mark.tc_plans_015
+def test_add_country_button_opens_country_package_form(plans_page):
+
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    plans_page.click_add_country()
+
+    assert plans_page.is_visible_with_wait(
+        plans_page.country_package_form
+    ), "Country-wise Package form is not displayed."
+
+

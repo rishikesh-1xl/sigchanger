@@ -61,6 +61,19 @@ class PlansPage(BasePage):
 
     enterprise_checkbox = "label:has-text('Enterprise (custom pricing)') input[type='checkbox']"
 
+    auto_sync_checkbox = "label:has-text('Auto-Sync') input[type='checkbox']"
+
+    sync_interval_dropdown = "label:has-text('Sync Interval') + select"   
+
+#--------------Pricing & Limits-------------------------
+
+    billing_interval_dropdown = "//label[text()='Billing Interval']/following-sibling::select"
+
+#-----------------------------Country-wise Package form.------------------
+
+    add_country_button = "button:has-text('+ Add Country')"
+
+    country_package_form = "//label[text()='Country']"
 
     def get_page_title(self):
 
@@ -120,5 +133,31 @@ class PlansPage(BasePage):
 
         return self.page.locator(locator).text_content().strip()
    
+    def uncheck_checkbox(self, locator):
 
+        checkbox = self.page.locator(locator)
+
+        checkbox.scroll_into_view_if_needed()
+
+        checkbox.wait_for(state="visible")
+
+        checkbox.uncheck()
     
+    def is_visible(self, locator):
+
+        return self.page.locator(locator).is_visible()
+    
+
+    def wait_for_state(self, locator, state="visible", timeout=5000):
+
+        self.page.locator(locator).wait_for(
+            state=state,
+            timeout=timeout
+        )
+    
+#-----------------------------Country-wise Package form.------------------
+
+    def click_add_country(self):
+
+        self.click(self.add_country_button)
+        
