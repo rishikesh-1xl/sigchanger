@@ -165,3 +165,29 @@ class TestDataGenerator:
             "designation": designation,
             "department": department
         }
+    
+    @staticmethod
+    def generate_plan_data(is_free=True):
+
+        # Keep unique ID short so slug stays within 30 characters
+        timestamp = str(int(time.time()))[-4:]
+
+        random_suffix = ''.join(
+            random.choices(
+                string.ascii_lowercase + string.digits,
+                k=4
+            )
+        )
+
+        unique_id = f"{timestamp}{random_suffix}"
+
+        return {
+            "plan_name": f"Automation Plan {unique_id}",    
+            "slug": f"plan-{unique_id}",
+            "max_users": "100",
+            "max_templates": "50",
+            "trial_days": "14",
+            "billing_interval": "Monthly",
+            "display_order": "1",
+            "price": "0" if is_free else "999"
+        }
