@@ -182,12 +182,13 @@ class TestDataGenerator:
         unique_id = f"{timestamp}{random_suffix}"
 
         return {
-            "plan_name": f"Automation Plan {unique_id}",    
-            "slug": f"plan-{unique_id}",
-            "max_users": "100",
-            "max_templates": "50",
-            "trial_days": "14",
-            "billing_interval": "Monthly",
-            "display_order": "1",
-            "price": "0" if is_free else "999"
-        }
+    "plan_name": f"Automation Plan {unique_id}",
+    "slug": f"plan-{unique_id}",
+    "description": "Automation created paid plan",
+    "max_users": "100",
+    "max_templates": "50",
+    "trial_days": "14",
+    "billing_interval": "Monthly",
+    "display_order": "1",
+    "price": "0" if is_free else "999"
+}

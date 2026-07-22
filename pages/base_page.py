@@ -65,3 +65,13 @@ class BasePage:
     def is_checkbox_checked(self, locator):
 
         return self.page.locator(locator).is_checked()
+    
+    def get_selected_dropdown_value(self, locator):
+
+        return self.page.locator(locator).input_value()
+    
+    def get_selected_dropdown_text(self, locator):
+
+        return self.page.locator(locator).locator(
+            "option:checked"
+        ).text_content().strip()

@@ -81,6 +81,8 @@ class PlansPage(BasePage):
 
     price_field = "//label[text()='Price']/following-sibling::input"
 
+    plan_price_field = "//input[@placeholder='Enter Price in USD']"
+
     country_package_interval_dropdown = "//label[text()='Interval']/following-sibling::select"
 
     active_checkbox = "//label[normalize-space()='Active']/input[@type='checkbox']"
@@ -124,6 +126,14 @@ class PlansPage(BasePage):
 
     first_plan_slug = ".rounded-2xl .text-orange-500"
     
+    #----------------------edit plan--------------------
+
+    edit_plan_heading = "//h1[normalize-space()='Edit Plan']"
+
+    update_plan_btn = "button:has-text('Update Plan')"
+
+    trial_period = "//label[text()='Trial Period (days)']/following-sibling::input"
+
 
     def get_page_title(self):
 
@@ -394,5 +404,111 @@ class PlansPage(BasePage):
             return None
 
         return card.first
+    
+    def select_country(self, country):
 
+        self.select_dropdown_by_text(
+            self.country_dropdown,
+            country
+        )
 
+    def get_selected_currency(self):
+
+        return self.get_selected_dropdown_value(self.currency_dropdown)
+
+    def enter_country_price(self, price):
+
+        self.enter_text(
+            self.price_field,
+            price
+        )
+    
+    def enter_plan_price(self, price):
+
+        self.enter_text(
+            self.plan_price_field,
+            price
+        )
+    
+    #--------------edit plan------------------------------
+
+    def click_edit_plan(self, plan_name):
+
+        self.page.locator(
+            f"//h3[normalize-space()='{plan_name}']/ancestor::div[contains(@class,'rounded-2xl')]//button[contains(.,'Edit')]"
+        ).click()
+
+    def is_edit_plan_page_displayed(self):
+
+        return self.is_visible_with_wait(
+            self.edit_plan_heading
+        )
+    
+    def get_plan_name(self):
+
+        return self.page.locator(
+            self.plan_name
+        ).input_value()
+    
+    def get_slug(self):
+
+        return self.page.locator(
+            self.slug
+        ).input_value()
+
+    def get_description(self):
+
+        return self.page.locator(
+            self.description
+        ).input_value()
+    
+    def get_plan_price(self):
+
+        return self.page.locator(
+            self.plan_price_field
+        ).input_value()
+
+    def get_max_users(self):
+
+        return self.page.locator(
+            self.max_users
+        ).input_value()
+    
+    def get_max_templates(self):
+
+        return self.page.locator(
+            self.max_templates
+        ).input_value()
+    
+    #------------update plan---------------
+
+    def enter_trial_days(self, days):
+
+        self.enter_text(
+            self.trial_period,
+            days
+        )
+    
+    def click_update_plan(self):
+
+        self.click(
+            self.update_plan_btn
+        )
+
+    def get_trial_days(self):
+
+        return self.page.locator(
+            self.trial_period
+        ).input_value()
+
+    def get_selected_sync_interval(self):
+
+        return self.get_selected_dropdown_value(
+            self.sync_interval_dropdown
+        )
+    
+    def get_selected_sync_interval(self):
+
+        return self.get_selected_dropdown_text(
+            self.sync_interval_dropdown
+        )

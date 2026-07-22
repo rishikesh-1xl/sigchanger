@@ -542,3 +542,509 @@ def test_create_free_plan_successfully(plans_page):
     assert plans_page.is_plan_deleted(
         plan_data["plan_name"]
     ), f"Plan '{plan_data['plan_name']}' was not deleted."
+
+
+
+
+@pytest.mark.tc_plans_025
+def test_create_paid_plan_successfully(plans_page):
+
+    # Generate unique paid plan data
+    plan_data = TestDataGenerator.generate_plan_data(
+        is_free=False
+    )
+
+    # Open Create Plan page
+    plans_page.click_create_plan()
+
+    assert plans_page.is_create_plan_page_displayed(), \
+        "Create Plan page is not displayed."
+
+    # Enter Plan Details
+    plans_page.enter_plan_name(
+        plan_data["plan_name"]
+    )
+
+    plans_page.enter_slug(
+        plan_data["slug"]
+    )
+
+    plans_page.enter_description(
+        plan_data["description"]
+    )
+
+    # Pricing & Limits
+    plans_page.enter_plan_price(
+        plan_data["price"]
+    )
+
+    plans_page.enter_max_users(
+        plan_data["max_users"]
+    )
+
+    plans_page.enter_max_templates(
+        plan_data["max_templates"]
+    )
+
+    # Country-wise Package
+    plans_page.click_add_country()
+
+    plans_page.select_country(
+        "India (IN)"
+    )
+
+    # Verify Currency auto-populated
+    assert plans_page.get_selected_currency() == "INR", \
+        "Currency was not auto-populated as INR."
+
+    plans_page.enter_country_price(
+        plan_data["price"]
+    )
+
+    # Create Plan
+    plans_page.click_submit_create_plan()
+
+    # Wait for redirect
+    plans_page.page.wait_for_url("**/plans")
+
+    # Verify Plans page
+    assert plans_page.is_plans_page_displayed(), \
+        "Plans page is not displayed."
+
+    # Verify success toast
+    assert plans_page.is_plan_created_successfully(), \
+        "Plan creation success message is not displayed."
+
+    # Verify created plan
+    assert plans_page.is_plan_present(
+        plan_data["plan_name"]
+    ), f"Plan '{plan_data['plan_name']}' was not created."
+
+    # Delete created plan
+    plans_page.click_delete_plan(
+        plan_data["plan_name"]
+    )
+
+    # Verify delete popup
+    assert plans_page.is_delete_popup_displayed(), \
+        "Delete confirmation popup is not displayed."
+
+    # Confirm delete
+    plans_page.click_confirm_delete()
+
+    # Verify delete success
+    assert plans_page.is_delete_success_message_displayed(), \
+        "Plan delete success message is not displayed."
+
+    # Verify plan deleted
+    assert plans_page.is_plan_deleted(
+        plan_data["plan_name"]
+    ), f"Plan '{plan_data['plan_name']}' was not deleted."
+
+
+@pytest.mark.tc_plans_026
+def test_verify_edit_plan_opens(plans_page):
+
+    # Generate unique paid plan data
+    plan_data = TestDataGenerator.generate_plan_data(
+        is_free=False
+    )
+
+    # Create Plan
+    plans_page.click_create_plan()
+
+    plans_page.enter_plan_name(
+        plan_data["plan_name"]
+    )
+
+    plans_page.enter_slug(
+        plan_data["slug"]
+    )
+
+    plans_page.enter_description(
+        plan_data["description"]
+    )
+
+    plans_page.enter_plan_price(
+        plan_data["price"]
+    )
+
+    plans_page.enter_max_users(
+        plan_data["max_users"]
+    )
+
+    plans_page.enter_max_templates(
+        plan_data["max_templates"]
+    )
+
+    plans_page.click_add_country()
+
+    plans_page.select_country("India (IN)")
+
+    assert plans_page.get_selected_currency() == "INR", \
+        "Currency was not auto-populated as INR."
+
+    plans_page.enter_country_price(
+        plan_data["price"]
+    )
+
+    plans_page.click_submit_create_plan()
+
+    plans_page.page.wait_for_url("**/plans")
+
+    assert plans_page.is_plan_created_successfully(), \
+        "Plan creation success message is not displayed."
+
+    assert plans_page.is_plan_present(
+        plan_data["plan_name"]
+    ), f"Plan '{plan_data['plan_name']}' was not created."
+
+    # Click Edit
+    plans_page.click_edit_plan(
+        plan_data["plan_name"]
+    )
+
+    # Verify Edit Page
+    assert plans_page.is_edit_plan_page_displayed(), \
+        "Edit Plan page is not displayed."
+
+    # Verify values are pre-populated
+    assert plans_page.get_plan_name() == plan_data["plan_name"]
+
+    assert plans_page.get_slug() == plan_data["slug"]
+
+    assert plans_page.get_description() == plan_data["description"]
+
+    assert plans_page.get_plan_price() == plan_data["price"]
+
+    assert plans_page.get_max_users() == plan_data["max_users"]
+
+    assert plans_page.get_max_templates() == plan_data["max_templates"]
+
+@pytest.mark.tc_plans_027
+def test_update_plan_successfully(plans_page):
+
+    # Generate unique paid plan
+    plan_data = TestDataGenerator.generate_plan_data(
+        is_free=False
+    )
+
+    updated_plan_data = {
+
+        "description": "Automation updated paid plan",
+
+        "max_users": "200",
+
+        "max_templates": "150",
+
+        "trial_days": "30",
+
+        "sync_interval": "Daily"
+    }
+
+    # Create Plan
+    plans_page.click_create_plan()
+
+    plans_page.enter_plan_name(
+        plan_data["plan_name"]
+    )
+
+    plans_page.enter_slug(
+        plan_data["slug"]
+    )
+
+    plans_page.enter_description(
+        plan_data["description"]
+    )
+
+    plans_page.enter_plan_price(
+        plan_data["price"]
+    )
+
+    plans_page.enter_max_users(
+        plan_data["max_users"]
+    )
+
+    plans_page.enter_max_templates(
+        plan_data["max_templates"]
+    )
+
+    plans_page.click_add_country()
+
+    plans_page.select_country(
+        "India (IN)"
+    )
+
+    assert plans_page.get_selected_currency() == "INR"
+
+    plans_page.enter_country_price(
+        plan_data["price"]
+    )
+
+    plans_page.click_submit_create_plan()
+
+    plans_page.page.wait_for_url("**/plans")
+
+    assert plans_page.is_plan_created_successfully()
+
+    # Open Edit Page
+    plans_page.click_edit_plan(
+        plan_data["plan_name"]
+    )
+
+    plans_page.page.wait_for_url("**/plans/*")
+
+    assert plans_page.is_edit_plan_page_displayed()
+
+    # Update Details
+    plans_page.enter_description(
+        updated_plan_data["description"]
+    )
+
+    plans_page.enter_max_users(
+        updated_plan_data["max_users"]
+    )
+
+    plans_page.enter_max_templates(
+        updated_plan_data["max_templates"]
+    )
+
+    plans_page.enter_trial_days(
+        updated_plan_data["trial_days"]
+    )
+
+    plans_page.click_checkbox(
+        plans_page.priority_support_checkbox
+    )
+
+    plans_page.click_checkbox(
+        plans_page.auto_sync_checkbox
+    )
+
+    plans_page.select_dropdown_by_text(
+        plans_page.sync_interval_dropdown,
+        updated_plan_data["sync_interval"]
+    )
+
+    # Update Plan
+    plans_page.click_update_plan()
+
+    plans_page.page.wait_for_url("**/plans")
+
+    # Verify Success
+    assert plans_page.is_plan_updated_successfully(), \
+        "Plan update success message is not displayed."
+
+    assert plans_page.is_plans_page_displayed(), \
+        "Plans page is not displayed."
+
+    # Cleanup
+    plans_page.click_delete_plan(
+        plan_data["plan_name"]
+    )
+
+    assert plans_page.is_delete_popup_displayed()
+
+    plans_page.click_confirm_delete()
+
+    assert plans_page.is_delete_success_message_displayed()
+
+    assert plans_page.is_plan_deleted(
+        plan_data["plan_name"]
+    )
+
+@pytest.mark.tc_plans_028
+def test_verify_updated_plan_details_reflected(plans_page):
+
+    # Generate unique paid plan
+    plan_data = TestDataGenerator.generate_plan_data(
+        is_free=False
+    )
+
+    updated_plan_data = {
+
+        "plan_name": f"{plan_data['plan_name']} Updated",
+
+        "description": "Automation updated paid plan",
+
+        "max_users": "200",
+
+        "max_templates": "150",
+
+        "trial_days": "30",
+
+        "sync_interval": "Daily"
+    }
+
+    # ----------------------------
+    # Create Plan
+    # ----------------------------
+
+    plans_page.click_create_plan()
+
+    plans_page.enter_plan_name(
+        plan_data["plan_name"]
+    )
+
+    plans_page.enter_slug(
+        plan_data["slug"]
+    )
+
+    plans_page.enter_description(
+        plan_data["description"]
+    )
+
+    plans_page.enter_plan_price(
+        plan_data["price"]
+    )
+
+    plans_page.enter_max_users(
+        plan_data["max_users"]
+    )
+
+    plans_page.enter_max_templates(
+        plan_data["max_templates"]
+    )
+
+    plans_page.click_add_country()
+
+    plans_page.select_country(
+        "India (IN)"
+    )
+
+    assert plans_page.get_selected_currency() == "INR"
+
+    plans_page.enter_country_price(
+        plan_data["price"]
+    )
+
+    plans_page.click_submit_create_plan()
+
+    plans_page.page.wait_for_url("**/plans")
+
+    assert plans_page.is_plan_created_successfully()
+
+    # ----------------------------
+    # Open Edit Page
+    # ----------------------------
+
+    plans_page.click_edit_plan(
+        plan_data["plan_name"]
+    )
+
+    plans_page.page.wait_for_url("**/plans/*")
+
+    assert plans_page.is_edit_plan_page_displayed()
+
+    # ----------------------------
+    # Update Plan
+    # ----------------------------
+
+    plans_page.enter_plan_name(
+        updated_plan_data["plan_name"]
+    )
+
+    plans_page.enter_description(
+        updated_plan_data["description"]
+    )
+
+    plans_page.enter_max_users(
+        updated_plan_data["max_users"]
+    )
+
+    plans_page.enter_max_templates(
+        updated_plan_data["max_templates"]
+    )
+
+    plans_page.enter_trial_days(
+        updated_plan_data["trial_days"]
+    )
+
+    plans_page.click_checkbox(
+        plans_page.priority_support_checkbox
+    )
+
+    plans_page.click_checkbox(
+        plans_page.auto_sync_checkbox
+    )
+
+    plans_page.select_dropdown_by_text(
+        plans_page.sync_interval_dropdown,
+        updated_plan_data["sync_interval"]
+    )
+
+    plans_page.click_update_plan()
+
+    plans_page.page.wait_for_url("**/plans")
+
+    assert plans_page.is_plan_updated_successfully()
+
+    # ----------------------------
+    # Verify Updated Plan on Plans Page
+    # ----------------------------
+
+    assert plans_page.is_plan_present(
+        updated_plan_data["plan_name"]
+    ), "Updated plan name is not displayed."
+
+    # ----------------------------
+    # Open Updated Plan Again
+    # ----------------------------
+
+    plans_page.click_edit_plan(
+        updated_plan_data["plan_name"]
+    )
+
+    plans_page.page.wait_for_url("**/plans/*")
+
+    assert plans_page.is_edit_plan_page_displayed()
+
+    # ----------------------------
+    # Verify Updated Details
+    # ----------------------------
+
+    assert plans_page.get_plan_name() == \
+        updated_plan_data["plan_name"]
+
+    assert plans_page.get_description() == \
+        updated_plan_data["description"]
+
+    assert plans_page.get_max_users() == \
+        updated_plan_data["max_users"]
+
+    assert plans_page.get_max_templates() == \
+        updated_plan_data["max_templates"]
+
+    assert plans_page.get_trial_days() == \
+        updated_plan_data["trial_days"]
+
+    assert plans_page.is_checkbox_checked(
+        plans_page.priority_support_checkbox
+    ), "Priority Support checkbox is not checked."
+
+    assert plans_page.is_checkbox_checked(
+        plans_page.auto_sync_checkbox
+    ), "Auto Sync checkbox is not checked."
+
+    assert plans_page.get_selected_sync_interval() == \
+        updated_plan_data["sync_interval"]
+
+    # ----------------------------
+    # Cleanup
+    # ----------------------------
+
+    plans_page.click_cancel()
+
+    plans_page.click_delete_plan(
+        updated_plan_data["plan_name"]
+    )
+
+    assert plans_page.is_delete_popup_displayed()
+
+    plans_page.click_confirm_delete()
+
+    assert plans_page.is_delete_success_message_displayed()
+
+    assert plans_page.is_plan_deleted(
+        updated_plan_data["plan_name"]
+    )
