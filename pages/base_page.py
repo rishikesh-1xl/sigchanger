@@ -75,3 +75,9 @@ class BasePage:
         return self.page.locator(locator).locator(
             "option:checked"
         ).text_content().strip()
+    
+    def get_input_value(self, locator):
+
+        return self.page.locator(
+            locator
+        ).input_value()

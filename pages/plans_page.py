@@ -134,6 +134,12 @@ class PlansPage(BasePage):
 
     trial_period = "//label[text()='Trial Period (days)']/following-sibling::input"
 
+    #-----------stript gateways--------------
+
+    stripe_price_id = "input[placeholder='Enter Stripe Price ID']"
+
+    razorpay_plan_id = "input[placeholder='Enter Razorpay Plan ID']"
+
 
     def get_page_title(self):
 
@@ -511,4 +517,35 @@ class PlansPage(BasePage):
 
         return self.get_selected_dropdown_text(
             self.sync_interval_dropdown
+        )
+    
+    #---------------------stripe gateways------------------
+
+    def enter_stripe_price_id(self, stripe_id):
+
+        self.enter_text(
+            self.stripe_price_id,
+            stripe_id
+        )
+
+
+    def enter_razorpay_plan_id(self, razorpay_id):
+
+        self.enter_text(
+            self.razorpay_plan_id,
+            razorpay_id
+        )
+
+
+    def get_stripe_price_id(self):
+
+        return self.get_input_value(
+            self.stripe_price_id
+        )
+
+
+    def get_razorpay_plan_id(self):
+
+        return self.get_input_value(
+            self.razorpay_plan_id
         )

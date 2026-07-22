@@ -1048,3 +1048,132 @@ def test_verify_updated_plan_details_reflected(plans_page):
     assert plans_page.is_plan_deleted(
         updated_plan_data["plan_name"]
     )
+
+@pytest.mark.tc_plans_029
+def test_verify_payment_gateway_ids_are_saved_successfully(plans_page):
+
+    # Generate unique paid plan
+    plan_data = TestDataGenerator.generate_plan_data(
+        is_free=False
+    )
+
+    payment_data = {
+
+        "stripe_price_id": "price_test_automation_001",
+
+        "razorpay_plan_id": "plan_test_automation_001"
+    }
+
+    # ----------------------------
+    # Create Paid Plan
+    # ----------------------------
+
+    plans_page.click_create_plan()
+
+    plans_page.enter_plan_name(
+        plan_data["plan_name"]
+    )
+
+    plans_page.enter_slug(
+        plan_data["slug"]
+    )
+
+    plans_page.enter_description(
+        plan_data["description"]
+    )
+
+    plans_page.enter_plan_price(
+        plan_data["price"]
+    )
+
+    plans_page.enter_max_users(
+        plan_data["max_users"]
+    )
+
+    plans_page.enter_max_templates(
+        plan_data["max_templates"]
+    )
+
+    plans_page.click_add_country()
+
+    plans_page.select_country(
+        "India (IN)"
+    )
+
+    assert plans_page.get_selected_currency() == "INR"
+
+    plans_page.enter_country_price(
+        plan_data["price"]
+    )
+
+    plans_page.click_submit_create_plan()
+
+    plans_page.page.wait_for_url("**/plans")
+
+    assert plans_page.is_plan_created_successfully()
+
+    # ----------------------------
+    # Open Edit
+    # ----------------------------
+
+    plans_page.click_edit_plan(
+        plan_data["plan_name"]
+    )
+
+    plans_page.page.wait_for_url("**/plans/*")
+
+    assert plans_page.is_edit_plan_page_displayed()
+
+    # ----------------------------
+    # Enter Payment Gateway IDs
+    # ----------------------------
+
+    plans_page.enter_stripe_price_id(
+        payment_data["stripe_price_id"]
+    )
+
+    plans_page.enter_razorpay_plan_id(
+        payment_data["razorpay_plan_id"]
+    )
+
+    plans_page.click_update_plan()
+
+    plans_page.page.wait_for_url("**/plans")
+
+    assert plans_page.is_plan_updated_successfully()
+
+    # ----------------------------
+    # Open Again
+    # ----------------------------
+
+    plans_page.click_edit_plan(
+        plan_data["plan_name"]
+    )
+
+    plans_page.page.wait_for_url("**/plans/*")
+
+    assert plans_page.get_stripe_price_id() == \
+        payment_data["stripe_price_id"]
+
+    assert plans_page.get_razorpay_plan_id() == \
+        payment_data["razorpay_plan_id"]
+
+    # ----------------------------
+    # Cleanup
+    # ----------------------------
+
+    plans_page.click_cancel()
+
+    plans_page.click_delete_plan(
+        plan_data["plan_name"]
+    )
+
+    assert plans_page.is_delete_popup_displayed()
+
+    plans_page.click_confirm_delete()
+
+    assert plans_page.is_delete_success_message_displayed()
+
+    assert plans_page.is_plan_deleted(
+        plan_data["plan_name"]
+    )
